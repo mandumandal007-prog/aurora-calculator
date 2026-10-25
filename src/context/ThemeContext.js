@@ -15,4 +15,15 @@ export function ThemeProvider({ children }) {
     [mode]
   );
 
-  return <Theme
+  return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
+}
+
+export function useTheme() {
+  const ctx = useContext(ThemeContext);
+  if (!ctx) {
+    throw new Error('useTheme must be used inside a ThemeProvider');
+  }
+  return ctx;
+}
+
+export default ThemeContext;

@@ -11,7 +11,11 @@ degrees/radians toggle, haptic feedback, and a persistent history panel.
 - **Scientific mode** — sin, cos, tan, log, ln, square root, square, π
 - **DEG / RAD toggle** for trigonometric functions
 - **Dark & light themes** — instant switch from the header
-- **History panel** — last 50 calculations, reopen
+- **History panel** — last 50 calculations, tap one to reopen its result
+- **Haptic feedback** on every key
+
+## Project structure
+
 ```
 
 aurora-calculator/
