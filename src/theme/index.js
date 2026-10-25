@@ -1,0 +1,2 @@
+/**
+ * Aurora Calculator — theme palettes.

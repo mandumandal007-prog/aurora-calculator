@@ -1,0 +1,24 @@
+{
+  "expo": {
+    "name": "Aurora Calculator",
+    "slug": "aurora-calculator",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "backgroundColor": "#0F0E17",
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.aurora.calculator"
+    },
+    "android": {
+      "package": "com.aurora.calculator",
+      "adaptiveIcon": {
+        "backgroundColor": "#0F0E17"
+      }
+    },
+    "web": {
+      "bundler": "metro"
+    }
+  }
+}
