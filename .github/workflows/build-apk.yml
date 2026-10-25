@@ -9,6 +9,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 60
+    permissions:
+      contents: write
     env:
       CI: "1"
       EXPO_NO_TELEMETRY: "1"
@@ -30,23 +32,44 @@ jobs:
       - name: Expo prebuild (generate android project)
         run: npx expo prebuild --platform android --no-install --clean
 
-      - name: Build release APK
+      - name: Limit to arm64-v8a and compress native libs (smaller APK)
+        working-directory: android
+        run: |
+          sed -i 's/^reactNativeArchitectures=.*/reactNativeArchitectures=arm64-v8a/' gradle.properties
+          grep -q '^reactNativeArchitectures=' gradle.properties || echo 'reactNativeArchitectures=arm64-v8a' >> gradle.properties
+          sed -i 's/^expo.useLegacyPackaging=.*/expo.useLegacyPackaging=true/' gradle.properties
+          grep -q '^expo.useLegacyPackaging=' gradle.properties || echo 'expo.useLegacyPackaging=true' >> gradle.properties
+          sed -i '0,/defaultConfig {/s//defaultConfig {\n        ndk { abiFilters "arm64-v8a" }/' app/build.gradle
+          grep -n -A3 'defaultConfig {' app/build.gradle
+          grep -n 'reactNativeArchitectures\|useLegacyPackaging' gradle.properties
+
+      - name: Build release APK (arm64-v8a only)
         working-directory: android
         env:
           NODE_ENV: production
           GRADLE_OPTS: -Dorg.gradle.jvmargs="-Xmx4g -XX:MaxMetaspaceSize=1g"
         run: |
           chmod +x gradlew
-          ./gradlew assembleRelease --no-daemon -PreactNativeArchitectures=arm64-v8a,armeabi-v7a
+          ./gradlew assembleRelease --no-daemon -PreactNativeArchitectures=arm64-v8a
 
       - name: Rename APK
         run: |
           mkdir -p out
           cp android/app/build/outputs/apk/release/*.apk out/aurora-calculator.apk
           ls -la out
+          unzip -l out/aurora-calculator.apk | grep '^.*lib/' | awk '{print $4}' | cut -d/ -f2 | sort | uniq -c
 
       - uses: actions/upload-artifact@v4
         with:
           name: aurora-calculator-apk
           path: out/aurora-calculator.apk
           if-no-files-found: error
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.0.${{ github.run_number }}
+          name: Aurora Calculator v1.0.${{ github.run_number }}
+          body: "Android APK (arm64-v8a). Download aurora-calculator.apk below and install (allow 'Install unknown apps')."
+          files: out/aurora-calculator.apk
+          make_latest: true
