@@ -6,7 +6,9 @@
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
     "backgroundColor": "#0F0E17",
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.aurora.calculator"
@@ -14,11 +16,19 @@
     "android": {
       "package": "com.aurora.calculator",
       "adaptiveIcon": {
-        "backgroundColor": "#0F0E17"
-      }
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#7F5AF0"
+      },
+      "versionCode": 1
     },
     "web": {
       "bundler": "metro"
+    },
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0F0E17"
     }
   }
 }
